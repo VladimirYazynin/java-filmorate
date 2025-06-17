@@ -64,4 +64,43 @@ public class FilmControllerTest {
         Assertions.assertEquals("Максимальная длина описания — 200 символов", exception.getMessage());
     }
 
+    @Test
+    void filmValidation_InvalidReleaseDate_ThrowValidationException() {
+        Film film = new Film();
+        film.setName("Уроки Фарси");
+        film.setDescription("x".repeat(199));
+        film.setReleaseDate(LocalDate.of(1894, 01, 10));
+        film.setDuration(124);
+        ValidationException exception = Assertions.assertThrows(ValidationException.class,
+                () -> controller.addFilm(film));
+        Assertions.assertEquals(
+                "Дата релиза не может быть раньше 28 декабря 1895 года", exception.getMessage()
+        );
+    }
+
+    @Test
+    void filmValidation_InvalidDuration_ThrowValidationException() {
+        Film film = new Film();
+        film.setName("Уроки Фарси");
+        film.setDescription("x".repeat(199));
+        film.setReleaseDate(LocalDate.of(2020, 05, 14));
+        film.setDuration(-99);
+        ValidationException exception = Assertions.assertThrows(ValidationException.class,
+                () -> controller.addFilm(film));
+        Assertions.assertEquals(
+                "Продолжительность фильма должна быть положительной", exception.getMessage()
+        );
+    }
+
+    @Test
+    void filmValidation_ValidObject_ShouldPass() {
+        Film film = new Film();
+        film.setName("Уроки Фарси");
+        film.setDescription("x".repeat(199));
+        film.setReleaseDate(LocalDate.of(2020, 05, 14));
+        film.setDuration(124);
+        Assertions.assertDoesNotThrow(() -> controller.addFilm(film));
+        Assertions.assertEquals(1, controller.getAllFilms().size());
+    }
+
 }
