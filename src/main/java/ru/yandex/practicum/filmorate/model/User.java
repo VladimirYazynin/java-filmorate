@@ -17,7 +17,6 @@ public class User {
     private String email;
     @NotBlank(message = "Логин должен быть указан")
     private String login;
-    @NotBlank(message = "Имя должно быть указано")
     private String name;
     @NotNull(message = "Дата дня рождения должна быть указана")
     @PastOrPresent(message = "Дата дня рождения не может быть в будущем")
