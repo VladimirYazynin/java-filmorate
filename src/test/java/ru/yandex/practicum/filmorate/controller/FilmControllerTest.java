@@ -1,44 +1,44 @@
 package ru.yandex.practicum.filmorate.controller;
 
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Validation;
+import jakarta.validation.Validator;
+import jakarta.validation.ValidatorFactory;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import ru.yandex.practicum.filmorate.exception.ValidationException;
+import org.springframework.boot.test.context.SpringBootTest;
 import ru.yandex.practicum.filmorate.model.Film;
 
 import java.time.LocalDate;
+import java.util.Set;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
+@SpringBootTest
 public class FilmControllerTest {
 
     FilmController controller;
+    Validator validator;
 
     @BeforeEach
     void init() {
+        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+        validator = factory.getValidator();
         controller = new FilmController();
     }
 
     @Test
-    void filmValidation_BlankFilmName_ThrowValidationException() {
+    void filmValidation_BlankFilmName_ThrowException() {
         Film film = new Film();
-        film.setName(" ");
-        film.setDescription("x".repeat(100));
-        film.setReleaseDate(LocalDate.of(2020, 05, 14));
-        film.setDuration(120);
-        ValidationException exception = Assertions.assertThrows(ValidationException.class,
-                () -> controller.addFilm(film));
-        Assertions.assertEquals("Название фильма должно быть указано", exception.getMessage());
-    }
-
-    @Test
-    void filmValidation_NullFilmName_ThrowValidationException() {
-        Film film = new Film();
-        film.setDescription("x".repeat(100));
-        film.setReleaseDate(LocalDate.of(2020, 05, 14));
-        film.setDuration(120);
-        ValidationException exception = Assertions.assertThrows(ValidationException.class,
-                () -> controller.addFilm(film));
-        Assertions.assertEquals("Название фильма должно быть указано", exception.getMessage());
+        film.setId(1L);
+        film.setName("");
+        film.setDescription("A mind-bending thriller");
+        film.setReleaseDate(LocalDate.of(2010, 7, 16));
+        film.setDuration(148);
+        Set<ConstraintViolation<Film>> violations = validator.validate(film);
+        assertEquals(1, violations.size());
+        assertEquals("Название фильма должно быть указано", violations.iterator().next().getMessage());
     }
 
     @Test
@@ -49,46 +49,47 @@ public class FilmControllerTest {
         film.setReleaseDate(LocalDate.of(2020, 05, 14));
         film.setDuration(120);
         Assertions.assertDoesNotThrow(() -> controller.addFilm(film));
-        Assertions.assertEquals(1, controller.getAllFilms().size());
+        assertEquals(1, controller.getAllFilms().size());
     }
 
     @Test
-    void filmValidation_DescriptionFilmLength201_ThrowValidationException() {
+    void filmValidation_DescriptionFilmLength201_ThrowException() {
         Film film = new Film();
         film.setName("Уроки Фарси");
         film.setDescription("x".repeat(201));
         film.setReleaseDate(LocalDate.of(2020, 05, 14));
         film.setDuration(120);
-        ValidationException exception = Assertions.assertThrows(ValidationException.class,
-                () -> controller.addFilm(film));
-        Assertions.assertEquals("Максимальная длина описания — 200 символов", exception.getMessage());
+        Set<ConstraintViolation<Film>> violations = validator.validate(film);
+        assertEquals(1, violations.size());
+        assertEquals("Максимальная длина описания — 200 символов", violations.iterator().next().getMessage());
     }
 
     @Test
-    void filmValidation_InvalidReleaseDate_ThrowValidationException() {
+    void filmValidation_InvalidReleaseDate_ThrowException() {
         Film film = new Film();
         film.setName("Уроки Фарси");
         film.setDescription("x".repeat(199));
         film.setReleaseDate(LocalDate.of(1894, 01, 10));
         film.setDuration(124);
-        ValidationException exception = Assertions.assertThrows(ValidationException.class,
-                () -> controller.addFilm(film));
-        Assertions.assertEquals(
-                "Дата релиза не может быть раньше 28 декабря 1895 года", exception.getMessage()
+        Set<ConstraintViolation<Film>> violations = validator.validate(film);
+        assertEquals(1, violations.size());
+        assertEquals(
+                "Дата релиза не может быть раньше 28 декабря 1895 года",
+                violations.iterator().next().getMessage()
         );
     }
 
     @Test
-    void filmValidation_InvalidDuration_ThrowValidationException() {
+    void filmValidation_InvalidDuration_ThrowException() {
         Film film = new Film();
         film.setName("Уроки Фарси");
         film.setDescription("x".repeat(199));
         film.setReleaseDate(LocalDate.of(2020, 05, 14));
         film.setDuration(-99);
-        ValidationException exception = Assertions.assertThrows(ValidationException.class,
-                () -> controller.addFilm(film));
-        Assertions.assertEquals(
-                "Продолжительность фильма должна быть положительной", exception.getMessage()
+        Set<ConstraintViolation<Film>> violations = validator.validate(film);
+        assertEquals(1, violations.size());
+        assertEquals("Продолжительность фильма должна быть положительной",
+                violations.iterator().next().getMessage()
         );
     }
 
@@ -100,7 +101,7 @@ public class FilmControllerTest {
         film.setReleaseDate(LocalDate.of(2020, 05, 14));
         film.setDuration(124);
         Assertions.assertDoesNotThrow(() -> controller.addFilm(film));
-        Assertions.assertEquals(1, controller.getAllFilms().size());
+        assertEquals(1, controller.getAllFilms().size());
     }
 
 }
