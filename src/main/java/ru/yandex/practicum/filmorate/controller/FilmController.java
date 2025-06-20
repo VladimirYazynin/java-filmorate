@@ -11,16 +11,11 @@ import org.springframework.web.bind.annotation.RestController;
 import ru.yandex.practicum.filmorate.model.Film;
 
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 
 @Slf4j
 @RestController
 @RequestMapping("/films")
 public class FilmController {
-
-    private Map<Long, Film> films = new HashMap<>();
-    private long idCount = 1L;
 
     @PostMapping
     public Film addFilm(@RequestBody @Valid Film film) {

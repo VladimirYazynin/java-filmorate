@@ -11,16 +11,11 @@ import org.springframework.web.bind.annotation.RestController;
 import ru.yandex.practicum.filmorate.model.User;
 
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 
 @Slf4j
 @RestController
 @RequestMapping("/users")
 public class UserController {
-
-    private final Map<Long, User> users = new HashMap<>();
-    private long idCount = 1L;
 
     @PostMapping
     public User createUser(@RequestBody @Valid User user) {
