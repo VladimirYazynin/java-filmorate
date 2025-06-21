@@ -7,6 +7,7 @@ import jakarta.validation.ValidatorFactory;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import ru.yandex.practicum.filmorate.model.Film;
 
@@ -18,6 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @SpringBootTest
 public class FilmControllerTest {
 
+    @Autowired
     FilmController controller;
     Validator validator;
 
@@ -25,7 +27,6 @@ public class FilmControllerTest {
     void init() {
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
         validator = factory.getValidator();
-        controller = new FilmController();
     }
 
     @Test
@@ -95,13 +96,14 @@ public class FilmControllerTest {
 
     @Test
     void filmValidation_ValidObject_ShouldPass() {
+        long startStorageSize = controller.getAllFilms().size();
         Film film = new Film();
         film.setName("Уроки Фарси");
         film.setDescription("x".repeat(199));
         film.setReleaseDate(LocalDate.of(2020, 05, 14));
         film.setDuration(124);
         Assertions.assertDoesNotThrow(() -> controller.addFilm(film));
-        assertEquals(1, controller.getAllFilms().size());
+        assertEquals(++startStorageSize, controller.getAllFilms().size());
     }
 
 }
