@@ -33,9 +33,40 @@ public class UserService {
         return userStorage.getAllUsers();
     }
 
-    //добавить друга
+    public User getUserById(long userId) {
+        return userStorage.getUserById(userId)
+                .orElseThrow(() -> new NotFoundException(
+                        String.format("Пользователь с id: %d не найден.", userId)
+                ));
+    }
 
-    //удалить друга
+    public void addFriend(long userId, long friendId) {
+        checkUserInStorage(userId, "Пользователь с id: %d не найден.");
+        checkUserInStorage(friendId, "Друг с id: %d не найден.");
+        userStorage.addFriend(userId, friendId);
+    }
 
-    //показать общих друзей
+    public void deleteFriend(long userId, long friendId) {
+        checkUserInStorage(userId, "Пользователь с id: %d не найден.");
+        checkUserInStorage(friendId, "Друг с id: %d не найден.");
+        userStorage.deleteFriend(userId, friendId);
+    }
+
+    public Collection<User> getUserFriends(long userId) {
+        checkUserInStorage(userId, "Пользователь с id: %d не найден.");
+        return userStorage.getUserFriends(userId);
+    }
+
+    public Collection<User> getCommonFriends(long userId, long otherId) {
+        checkUserInStorage(userId, "Пользователь с id: %d не найден.");
+        checkUserInStorage(userId, "Другой пользователь с id: %d не найден.");
+        return userStorage.getCommonFriends(userId, otherId);
+    }
+
+    private void checkUserInStorage(long userId, String message) {
+        userStorage.getUserById(userId)
+            .orElseThrow(() -> new NotFoundException(
+                String.format(message, userId)
+        ));
+    }
 }

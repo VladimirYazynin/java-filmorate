@@ -7,11 +7,14 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Component
 public class InMemoryUserStorage implements UserStorage {
 
     private final Map<Long, User> users = new HashMap<>();
+    private final Map<Long, Set<Long>> userFriendIds = new HashMap<>();
 
     private long generatorId = 1L;
 
@@ -47,5 +50,32 @@ public class InMemoryUserStorage implements UserStorage {
     @Override
     public Collection<User> getAllUsers() {
         return users.values();
+    }
+
+    @Override
+    public void addFriend(long userId, long friendId) {
+        userFriendIds.get(userId).add(friendId);
+    }
+
+    @Override
+    public void deleteFriend(long userId, long friendId) {
+        userFriendIds.get(userId).remove(friendId);
+    }
+
+    @Override
+    public Collection<User> getUserFriends(long userId) {
+        return userFriendIds.get(userId)
+                .stream()
+                .map(users::get)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public Collection<User> getCommonFriends(long userId, long otherId) {
+        return userFriendIds.get(userId)
+                .stream()
+                .filter(userFriendIds.get(otherId)::contains)
+                .map(users::get)
+                .collect(Collectors.toList());
     }
 }
