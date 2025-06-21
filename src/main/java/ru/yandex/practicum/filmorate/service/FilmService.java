@@ -21,7 +21,7 @@ public class FilmService {
     public Film updateFilm(Film modifiedFilm) {
         return filmStorage.updateFilm(modifiedFilm)
                         .orElseThrow(() -> new NotFoundException(
-                                "Фильм с id: " + modifiedFilm.getId() +  " не найден."
+                                String.format("Фильм с id: %d не найден.", modifiedFilm.getId())
                         ));
     }
 

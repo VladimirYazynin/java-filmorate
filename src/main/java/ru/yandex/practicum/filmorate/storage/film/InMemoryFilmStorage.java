@@ -12,10 +12,10 @@ import java.util.Optional;
 public class InMemoryFilmStorage implements FilmStorage {
 
     private final Map<Long, Film> films = new HashMap<>();
-    private long generatorId = 0L;
+    private long generatorId = 1L;
 
     public long generateId() {
-        return ++generatorId;
+        return generatorId++;
     }
 
     @Override
@@ -27,6 +27,8 @@ public class InMemoryFilmStorage implements FilmStorage {
 
     @Override
     public Optional<Film> updateFilm(Film modifiedFilm) {
+        if (!films.containsKey(modifiedFilm.getId()))
+            return Optional.empty();
         films.put(modifiedFilm.getId(), modifiedFilm);
         return Optional.of(modifiedFilm);
     }
