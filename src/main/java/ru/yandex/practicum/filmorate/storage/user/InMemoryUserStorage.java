@@ -5,6 +5,7 @@ import ru.yandex.practicum.filmorate.model.User;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -24,8 +25,9 @@ public class InMemoryUserStorage implements UserStorage {
 
     @Override
     public User addUser(User user) {
-        user.setId(generatorId);
+        user.setId(generateId());
         users.put(user.getId(), user);
+        userFriendIds.put(user.getId(), new HashSet<>());
         return user;
     }
 
@@ -44,7 +46,7 @@ public class InMemoryUserStorage implements UserStorage {
 
     @Override
     public Optional<User> getUserById(Long userId) {
-        return Optional.of(users.get(userId));
+        return Optional.ofNullable(users.get(userId));
     }
 
     @Override
@@ -55,11 +57,13 @@ public class InMemoryUserStorage implements UserStorage {
     @Override
     public void addFriend(long userId, long friendId) {
         userFriendIds.get(userId).add(friendId);
+        userFriendIds.get(friendId).add(userId);
     }
 
     @Override
     public void deleteFriend(long userId, long friendId) {
         userFriendIds.get(userId).remove(friendId);
+        userFriendIds.get(friendId).remove(userId);
     }
 
     @Override

@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
+import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
 import java.util.Collection;
 
@@ -13,6 +14,7 @@ import java.util.Collection;
 public class FilmService {
 
     private final FilmStorage filmStorage;
+    private final UserStorage userStorage;
 
     public Film addFilm(Film film) {
         return filmStorage.addFilm(film);
@@ -29,10 +31,28 @@ public class FilmService {
         return filmStorage.getAllFilms();
     }
 
+    public void addLike(long userId, long filmId) {
+        checkFilmAndUser(userId, filmId);
+        filmStorage.addLike(userId, filmId);
+    }
 
-    // добавить лайк
+    public void deleteLike(long userId, long filmId) {
+        checkFilmAndUser(userId, filmId);
+        filmStorage.deleteLike(userId, filmId);
+    }
 
-    // удалить лайк
+    public Collection<Film> getPopularFilms(long filmCount) {
+        return filmStorage.getPopularFilms(filmCount);
+    }
 
-    // вывести топ 10
+    private void checkFilmAndUser(long userId, long filmId) {
+        filmStorage.getFilmById(filmId)
+                .orElseThrow(() -> new NotFoundException(
+                        String.format("Фильм с id: %d не найден.", filmId)
+                ));
+        userStorage.getUserById(userId)
+                .orElseThrow(() -> new NotFoundException(
+                        String.format("Пользователь с id: %d не найден.", userId)
+                ));
+    }
 }

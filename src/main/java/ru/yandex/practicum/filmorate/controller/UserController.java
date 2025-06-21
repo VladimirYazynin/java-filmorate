@@ -35,7 +35,7 @@ public class UserController {
         return updatedUser;
     }
 
-    @PostMapping("/{id}/friends/{friendId}")
+    @PutMapping("/{id}/friends/{friendId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void addFriend(@PathVariable(value = "id") long userId, @PathVariable long friendId) {
         log.info("Поступил запрос добавления в друзья пользователю {} от пользователя {}", userId, friendId);
