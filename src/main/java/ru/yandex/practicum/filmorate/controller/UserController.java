@@ -30,9 +30,9 @@ public class UserController {
     @PutMapping
     public User updateUser(@RequestBody @Valid User modifiedUser) {
         log.info("На вход поступили данные для обновления пользователя: {}", modifiedUser);
-        User updatedUser = userService.updateUser(modifiedUser);
-        log.info("Данные по пользователю обновлены: {}", updatedUser);
-        return updatedUser;
+        userService.updateUser(modifiedUser);
+        log.info("Данные по пользователю c id: {} обновлены.", modifiedUser.getId());
+        return modifiedUser;
     }
 
     @PutMapping("/{id}/friends/{friendId}")

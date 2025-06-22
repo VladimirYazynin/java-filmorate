@@ -5,17 +5,14 @@ import ru.yandex.practicum.filmorate.model.User;
 
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Component
 public class InMemoryUserStorage implements UserStorage {
 
     private final Map<Long, User> users = new HashMap<>();
-    private final Map<Long, Set<Long>> userFriendIds = new HashMap<>();
 
     private long generatorId = 1L;
 
@@ -27,21 +24,18 @@ public class InMemoryUserStorage implements UserStorage {
     public User addUser(User user) {
         user.setId(generateId());
         users.put(user.getId(), user);
-        userFriendIds.put(user.getId(), new HashSet<>());
         return user;
     }
 
     @Override
-    public Optional<User> updateUser(User modifiedUser) {
-        if (!users.containsKey(modifiedUser.getId()))
-            return Optional.empty();
-        users.put(modifiedUser.getId(), modifiedUser);
-        return Optional.of(modifiedUser);
+    public void updateUser(User modifiedUser) {
+        if (users.containsKey(modifiedUser.getId()))
+            users.put(modifiedUser.getId(), modifiedUser);
     }
 
     @Override
-    public User deleteUser(Long userId) {
-        return users.remove(userId);
+    public void deleteUser(Long userId) {
+        users.remove(userId);
     }
 
     @Override
@@ -56,19 +50,19 @@ public class InMemoryUserStorage implements UserStorage {
 
     @Override
     public void addFriend(long userId, long friendId) {
-        userFriendIds.get(userId).add(friendId);
-        userFriendIds.get(friendId).add(userId);
+        users.get(userId).getFriendsIds().add(friendId);
+        users.get(friendId).getFriendsIds().add(userId);
     }
 
     @Override
     public void deleteFriend(long userId, long friendId) {
-        userFriendIds.get(userId).remove(friendId);
-        userFriendIds.get(friendId).remove(userId);
+        users.get(userId).getFriendsIds().remove(friendId);
+        users.get(friendId).getFriendsIds().remove(userId);
     }
 
     @Override
     public Collection<User> getUserFriends(long userId) {
-        return userFriendIds.get(userId)
+        return users.get(userId).getFriendsIds()
                 .stream()
                 .map(users::get)
                 .collect(Collectors.toList());
@@ -76,9 +70,9 @@ public class InMemoryUserStorage implements UserStorage {
 
     @Override
     public Collection<User> getCommonFriends(long userId, long otherId) {
-        return userFriendIds.get(userId)
+        return users.get(userId).getFriendsIds()
                 .stream()
-                .filter(userFriendIds.get(otherId)::contains)
+                .filter(users.get(otherId).getFriendsIds()::contains)
                 .map(users::get)
                 .collect(Collectors.toList());
     }

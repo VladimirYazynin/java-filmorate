@@ -8,9 +8,9 @@ import java.util.Optional;
 public interface FilmStorage {
     Film addFilm(Film film);
 
-    Optional<Film> updateFilm(Film modifiedFilm);
+    void updateFilm(Film modifiedFilm);
 
-    Film deleteFilm(Long filmId);
+    void deleteFilm(Long filmId);
 
     Optional<Film> getFilmById(Long filmId);
 

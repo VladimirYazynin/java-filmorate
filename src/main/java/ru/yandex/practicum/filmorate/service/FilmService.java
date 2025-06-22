@@ -20,11 +20,9 @@ public class FilmService {
         return filmStorage.addFilm(film);
     }
 
-    public Film updateFilm(Film modifiedFilm) {
-        return filmStorage.updateFilm(modifiedFilm)
-                        .orElseThrow(() -> new NotFoundException(
-                                String.format("Фильм с id: %d не найден.", modifiedFilm.getId())
-                        ));
+    public void updateFilm(Film modifiedFilm) {
+        checkFilm(modifiedFilm.getId());
+        filmStorage.updateFilm(modifiedFilm);
     }
 
     public Collection<Film> getAllFilms() {
@@ -53,6 +51,13 @@ public class FilmService {
         userStorage.getUserById(userId)
                 .orElseThrow(() -> new NotFoundException(
                         String.format("Пользователь с id: %d не найден.", userId)
+                ));
+    }
+
+    private void checkFilm(long filmId) {
+        filmStorage.getFilmById(filmId)
+                .orElseThrow(() -> new NotFoundException(
+                        String.format("Фильм с id: %d не найден.", filmId)
                 ));
     }
 }

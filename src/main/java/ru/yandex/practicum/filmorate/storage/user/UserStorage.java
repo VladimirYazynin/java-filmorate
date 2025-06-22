@@ -9,9 +9,9 @@ public interface UserStorage {
 
     User addUser(User user);
 
-    Optional<User> updateUser(User modifiedUser);
+    void updateUser(User modifiedUser);
 
-    User deleteUser(Long userId);
+    void deleteUser(Long userId);
 
     Optional<User> getUserById(Long userId);
 

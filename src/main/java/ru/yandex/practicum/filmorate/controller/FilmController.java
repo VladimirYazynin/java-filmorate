@@ -30,9 +30,9 @@ public class FilmController {
     @PutMapping
     public Film updateFilm(@RequestBody @Valid Film modifiedFilm) {
         log.info("На вход поступили данные для обновления фильма: {}", modifiedFilm);
-        Film updatedFilm = filmService.updateFilm(modifiedFilm);
-        log.info("Обновлён фильм: {}", updatedFilm);
-        return updatedFilm;
+        filmService.updateFilm(modifiedFilm);
+        log.info("Обновлён фильм c id: {}", modifiedFilm.getId());
+        return modifiedFilm;
     }
 
     @GetMapping

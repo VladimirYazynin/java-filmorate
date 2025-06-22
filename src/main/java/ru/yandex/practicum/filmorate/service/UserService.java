@@ -20,13 +20,11 @@ public class UserService {
         return userStorage.addUser(user);
     }
 
-    public User updateUser(User modifiedUser) {
+    public void updateUser(User modifiedUser) {
         if (modifiedUser.getName() == null)
             modifiedUser.setName(modifiedUser.getLogin());
-        return userStorage.updateUser(modifiedUser)
-                .orElseThrow(() -> new NotFoundException(
-                        String.format("Пользователь с id: %d не найден.", modifiedUser.getId())
-                ));
+        checkUserInStorage(modifiedUser.getId());
+        userStorage.updateUser(modifiedUser);
     }
 
     public Collection<User> getAllUsers() {
@@ -41,32 +39,32 @@ public class UserService {
     }
 
     public void addFriend(long userId, long friendId) {
-        checkUserInStorage(userId, "Пользователь с id: %d не найден.");
-        checkUserInStorage(friendId, "Друг с id: %d не найден.");
+        checkUserInStorage(userId);
+        checkUserInStorage(friendId);
         userStorage.addFriend(userId, friendId);
     }
 
     public void deleteFriend(long userId, long friendId) {
-        checkUserInStorage(userId, "Пользователь с id: %d не найден.");
-        checkUserInStorage(friendId, "Друг с id: %d не найден.");
+        checkUserInStorage(userId);
+        checkUserInStorage(friendId);
         userStorage.deleteFriend(userId, friendId);
     }
 
     public Collection<User> getUserFriends(long userId) {
-        checkUserInStorage(userId, "Пользователь с id: %d не найден.");
+        checkUserInStorage(userId);
         return userStorage.getUserFriends(userId);
     }
 
     public Collection<User> getCommonFriends(long userId, long otherId) {
-        checkUserInStorage(userId, "Пользователь с id: %d не найден.");
-        checkUserInStorage(userId, "Другой пользователь с id: %d не найден.");
+        checkUserInStorage(userId);
+        checkUserInStorage(otherId);
         return userStorage.getCommonFriends(userId, otherId);
     }
 
-    private void checkUserInStorage(long userId, String message) {
+    private void checkUserInStorage(long userId) {
         userStorage.getUserById(userId)
             .orElseThrow(() -> new NotFoundException(
-                String.format(message, userId)
+                String.format("Пользователь с id: %d не найден.", userId)
         ));
     }
 }
