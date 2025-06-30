@@ -1,6 +1,5 @@
 package ru.yandex.practicum.filmorate.dal.storage.user;
 
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.User;
 
@@ -8,7 +7,6 @@ import java.util.Collection;
 import java.util.Optional;
 
 @Component
-@Qualifier("userDBStorage")
 public class UserDbStorage implements UserStorage {
     @Override
     public User addUser(User user) {

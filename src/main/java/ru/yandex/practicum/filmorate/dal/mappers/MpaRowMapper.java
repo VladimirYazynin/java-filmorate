@@ -2,19 +2,18 @@ package ru.yandex.practicum.filmorate.dal.mappers;
 
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
-import ru.yandex.practicum.filmorate.model.Rating;
+import ru.yandex.practicum.filmorate.model.Mpa;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
 
 @Component
-public class RatingRowMapper implements RowMapper<Rating> {
-
+public class MpaRowMapper implements RowMapper<Mpa> {
 
     @Override
-    public Rating mapRow(ResultSet rs, int rowNum) throws SQLException {
-        Rating rating = new Rating();
+    public Mpa mapRow(ResultSet rs, int rowNum) throws SQLException {
+        Mpa rating = new Mpa();
         rating.setId(rs.getInt("id"));
         rating.setName(rs.getString("name"));
         rating.setDescription(rs.getString("description"));

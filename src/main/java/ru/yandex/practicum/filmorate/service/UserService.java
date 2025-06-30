@@ -13,7 +13,7 @@ import java.util.Collection;
 @RequiredArgsConstructor
 public class UserService {
 
-    @Qualifier("userDBStorage")
+    @Qualifier("userDbStorage")
     private final UserStorage userStorage;
 
     public User createUser(User user) {
