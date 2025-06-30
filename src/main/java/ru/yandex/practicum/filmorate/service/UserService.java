@@ -1,10 +1,11 @@
 package ru.yandex.practicum.filmorate.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.storage.user.UserStorage;
+import ru.yandex.practicum.filmorate.dal.storage.user.UserStorage;
 
 import java.util.Collection;
 
@@ -12,6 +13,7 @@ import java.util.Collection;
 @RequiredArgsConstructor
 public class UserService {
 
+    @Qualifier("userDBStorage")
     private final UserStorage userStorage;
 
     public User createUser(User user) {
