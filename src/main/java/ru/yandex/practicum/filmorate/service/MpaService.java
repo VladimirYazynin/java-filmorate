@@ -19,8 +19,8 @@ public class MpaService {
     }
 
     public Mpa getMpaById(int mpaId) {
-        return mpaStorage.getMpaById(mpaId).
-                orElseThrow(() -> new NotFoundException(
+        return mpaStorage.getMpaById(mpaId)
+                .orElseThrow(() -> new NotFoundException(
                         String.format("Жанр с id: %d не найден.", mpaId)
                 ));
     }
