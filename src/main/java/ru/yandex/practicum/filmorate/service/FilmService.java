@@ -120,21 +120,6 @@ public class FilmService {
         return film;
     }
 
-    private void checkGenres(Set<Genre> genres) {
-
-        Set<Integer> genreIds = genres.stream()
-                .map(Genre::getId)
-                .collect(Collectors.toSet()
-                );
-        Set<Integer> foundIds = genreStorage.getByListId(genreIds).stream()
-                .map(Genre::getId)
-                .collect(Collectors.toSet());
-        genreIds.removeAll(foundIds);
-        if (!genreIds.isEmpty()) {
-        }
-        throw new NotFoundException("Не найдены жанры с ID: " + genreIds);
-    }
-
     private void checkMpa(int mpaId) {
         mpaStorage.getMpaById(mpaId)
                 .orElseThrow(() -> new NotFoundException(
