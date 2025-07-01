@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import ru.yandex.practicum.filmorate.dto.FilmDto;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.service.FilmService;
 
@@ -20,11 +21,11 @@ public class FilmController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Film addFilm(@RequestBody @Valid Film film) {
+    public FilmDto addFilm(@RequestBody @Valid Film film) {
         log.info("На вход поступили данные для добавления фильма: {}", film);
-        filmService.addFilm(film);
+        FilmDto filmDto = filmService.addFilm(film);
         log.info("Добавлен фильм: {}", film);
-        return film;
+        return filmDto;
     }
 
     @PutMapping
@@ -38,6 +39,11 @@ public class FilmController {
     @GetMapping
     public Collection<Film> getAllFilms() {
         return filmService.getAllFilms();
+    }
+
+    @GetMapping("/{id}")
+    public FilmDto getFilmById(@PathVariable(value = "id") long filmId) {
+        return filmService.getFilmById(filmId);
     }
 
     @PutMapping("/{id}/like/{userId}")

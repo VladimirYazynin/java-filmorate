@@ -18,6 +18,8 @@ public class GenreDbStorage extends DbStorage implements GenreStorage {
     private final static String FIND_ALL_QUERY = "SELECT * FROM genres";
     private final static String FIND_BY_ID_QUERY = "SELECT * FROM genres WHERE id = ?";
     private final static String FIND_LIST_QUERY = "SELECT * FROM genres WHERE id IN ";
+    private static final String GENRE_FOR_FILM_QUERY =
+            "SELECT g.id AS id, g.name AS name FROM films_genres AS fg INNER JOIN genres AS g ON g.id = fg.genre_id WHERE fg.film_id = ?";
 
     public GenreDbStorage(JdbcTemplate jdbc, RowMapper<Genre> mapper) {
         super(jdbc, mapper, Genre.class);
@@ -40,6 +42,11 @@ public class GenreDbStorage extends DbStorage implements GenreStorage {
                 .collect(Collectors.joining(", ", "(", ")"));
         System.out.println(idsByString);
         return findMany(FIND_LIST_QUERY + idsByString);
+    }
+
+    @Override
+    public List<Genre> getGenreForFilm(long id) {
+        return findMany(GENRE_FOR_FILM_QUERY, id);
     }
 
 }

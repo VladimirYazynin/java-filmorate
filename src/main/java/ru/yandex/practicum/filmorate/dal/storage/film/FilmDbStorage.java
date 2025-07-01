@@ -28,8 +28,10 @@ public class FilmDbStorage extends DbStorage implements FilmStorage {
             "DELETE FROM films WHERE id = ?";
     private static final String POPULAR_FILM_QUERY =
             "SELECT f.id, f.name, f.description, f.releaseDate, f.duration, COUNT(l.id) AS rate FROM films AS f LEFT JOIN likes AS l ON l.film_id = f.id GROUP BY f.id, f.name, f.description, f.releaseDate, f.duration ORDER BY COUNT(l.id) DESC LIMIT ?";
-    private static final String GENRE_FOR_FILM_QUERY =
-            "SELECT g.id, g.name FROM films_genres AS fg INNER JOIN genres AS g ON fg.genre_id=g.id WHERE fg.film_id = ?";
+    private static final String INSERT_LIKE_QUERY =
+            "INSERT INTO likes (user_id, film_id) VALUES (?, ?)";
+    private static final String DELETE_LIKE_QUERY =
+            "DELETE FROM likes WHERE film_id = ? AND user_id = ?";
 
     public FilmDbStorage(JdbcTemplate jdbc, RowMapper<Film> mapper) {
         super(jdbc, mapper, Film.class);
@@ -37,7 +39,8 @@ public class FilmDbStorage extends DbStorage implements FilmStorage {
 
     @Override
     public Film addFilm(Film film) {
-        Long id = insert(INSERT_QUERY,
+        Long id = insert(
+                INSERT_QUERY,
                 film.getName(),
                 film.getDescription(),
                 Date.valueOf(film.getReleaseDate()),
@@ -50,7 +53,8 @@ public class FilmDbStorage extends DbStorage implements FilmStorage {
 
     @Override
     public void updateFilm(Film modifiedFilm) {
-        update(UPDATE_QUERY,
+        update(
+                UPDATE_QUERY,
                 modifiedFilm.getName(),
                 modifiedFilm.getDescription(),
                 modifiedFilm.getReleaseDate(),
@@ -62,7 +66,7 @@ public class FilmDbStorage extends DbStorage implements FilmStorage {
 
     @Override
     public void deleteFilm(Long filmId) {
-        delete(DELETE_QUERY, filmId);
+        update(DELETE_QUERY, filmId);
     }
 
     @Override
@@ -73,11 +77,6 @@ public class FilmDbStorage extends DbStorage implements FilmStorage {
     @Override
     public Collection<Film> getAllFilms() {
         return findMany(FIND_ALL_QUERY);
-    }
-
-
-    public List<Genre> getGenreForFilm(int id) {
-        return findMany(GENRE_FOR_FILM_QUERY, id);
     }
 
     @Override
@@ -92,18 +91,26 @@ public class FilmDbStorage extends DbStorage implements FilmStorage {
             }
             valuesBuilder.append("(").append(idFilm).append(", ").append(idGenre).append(")");
         }
-        String queryInsertGenre = "INSERT INTO filmGenre (film_id, genre_id) VALUES " + valuesBuilder;
+        String queryInsertGenre = "MERGE INTO films_genres (film_id, genre_id) KEY(film_id, genre_id) VALUES " + valuesBuilder;
         insertMany(queryInsertGenre);
     }
 
     @Override
     public void addLike(long userId, long filmId) {
-
+        insert(
+                INSERT_LIKE_QUERY,
+                userId,
+                filmId
+        );
     }
 
     @Override
     public void deleteLike(long userId, long filmId) {
-
+        update(
+                DELETE_LIKE_QUERY,
+                filmId,
+                userId
+        );
     }
 
     @Override

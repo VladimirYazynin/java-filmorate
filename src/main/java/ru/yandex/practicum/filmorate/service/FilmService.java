@@ -4,13 +4,17 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.dal.storage.film.GenreStorage;
 import ru.yandex.practicum.filmorate.dal.storage.film.MpaStorage;
+import ru.yandex.practicum.filmorate.dto.FilmDto;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
+import ru.yandex.practicum.filmorate.mapper.FilmMapper;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.dal.storage.film.FilmStorage;
 import ru.yandex.practicum.filmorate.dal.storage.user.UserStorage;
 import ru.yandex.practicum.filmorate.model.Genre;
+import ru.yandex.practicum.filmorate.model.Mpa;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -24,13 +28,13 @@ public class FilmService {
     private final GenreStorage genreStorage;
     private final MpaStorage mpaStorage;
 
-    public Film addFilm(Film film) {
+    public FilmDto addFilm(Film film) {
         setGenre(film);
         setMpa(film);
         filmStorage.addFilm(film);
         if (film.getGenres() != null)
             filmStorage.insertGenreForFilm(film.getId(), film.getGenres());
-        return film;
+        return FilmMapper.mapToFilmDto(film);
     }
 
     public void updateFilm(Film modifiedFilm) {
@@ -42,6 +46,17 @@ public class FilmService {
 
     public Collection<Film> getAllFilms() {
         return filmStorage.getAllFilms();
+    }
+
+    public FilmDto getFilmById(long filmId) {
+        Film film = filmStorage.getFilmById(filmId)
+                .orElseThrow(() -> new NotFoundException(
+                        String.format("Фильм с id: %d не найден.", filmId)
+                ));
+        searchAndSetGenre(film);
+        searchAndSetMpa(film);
+        System.out.println("desc2 " + film.getDescription());
+        return FilmMapper.mapToFilmDto(film);
     }
 
     public void addLike(long userId, long filmId) {
@@ -96,11 +111,11 @@ public class FilmService {
     }
 
     private Film setMpa(Film film) {
-        checkMpa(film.getMpa().getId());
         if (film.getMpa() != null) {
             int mpaId = film.getMpa().getId();
             checkMpa(mpaId);
             film.setMpa(mpaStorage.getMpaById(mpaId).get());
+
         }
         return film;
     }
@@ -123,6 +138,24 @@ public class FilmService {
         mpaStorage.getMpaById(mpaId)
                 .orElseThrow(() -> new NotFoundException(
                         String.format("Mpa с id: %d не найден.", mpaId)
-                ));;
+                ));
     }
+
+    public void searchAndSetMpa(Film film) {
+        checkFilm(film.getId());
+        Mpa mpa = mpaStorage.getMpaByFilmId(film.getId())
+                .orElseThrow(() -> new NotFoundException(
+                        String.format("Mpa для фильма с id: %d не найден.", film.getId())
+                ));
+        film.setMpa(mpa);
+    }
+
+    public void searchAndSetGenre(Film film) {
+        Set<Genre> genres = new HashSet<>();
+        System.out.println("description: " + film.getDescription());
+        List<Genre> foundGenres = genreStorage.getGenreForFilm(film.getId());
+        genres.addAll(foundGenres);
+        film.setGenres(genres);
+    }
+
 }
