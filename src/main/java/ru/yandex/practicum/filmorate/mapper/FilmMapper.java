@@ -8,7 +8,6 @@ import ru.yandex.practicum.filmorate.model.Genre;
 
 import java.util.Comparator;
 import java.util.HashSet;
-import java.util.List;
 import java.util.stream.Collectors;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -21,7 +20,6 @@ public class FilmMapper {
         filmDto.setDescription(film.getDescription());
         filmDto.setReleaseDate(film.getReleaseDate());
         filmDto.setDuration(film.getDuration());
-//        if (film.getMpa() != null)
         filmDto.setMpa(film.getMpa());
         if (film.getGenres() == null) {
             film.setGenres(new HashSet<>());

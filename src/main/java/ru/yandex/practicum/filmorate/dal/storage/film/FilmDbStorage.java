@@ -46,7 +46,7 @@ public class FilmDbStorage extends DbStorage implements FilmStorage {
                 Date.valueOf(film.getReleaseDate()),
                 film.getDuration(),
                 film.getMpa().getId()
-                );
+        );
         film.setId(id);
         return film;
     }

@@ -1,4 +1,4 @@
-package ru.yandex.practicum.filmorate.controller;
+package ru.yandex.practicum.filmorate.service;
 
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,7 +11,6 @@ import ru.yandex.practicum.filmorate.dto.FilmDto;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.model.Mpa;
-import ru.yandex.practicum.filmorate.service.FilmService;
 
 import java.time.LocalDate;
 import java.util.HashSet;
@@ -41,7 +40,7 @@ public class FilmServiceTest {
         film.setName("name");
         film.setDescription("v".repeat(15));
         film.setDuration(90);
-        film.setReleaseDate(LocalDate.of(2005,1,1));
+        film.setReleaseDate(LocalDate.of(2005, 1, 1));
         film.setMpa(mpa);
         film.setGenres(genres);
     }

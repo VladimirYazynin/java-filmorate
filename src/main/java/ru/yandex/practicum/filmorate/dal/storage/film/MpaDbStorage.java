@@ -10,7 +10,7 @@ import java.util.Collection;
 import java.util.Optional;
 
 @Repository
-public class MpaDbStorage extends DbStorage implements MpaStorage{
+public class MpaDbStorage extends DbStorage implements MpaStorage {
 
     private final static String FIND_ALL_QUERY = "SELECT * FROM rating";
     private final static String FIND_BY_ID_QUERY = "SELECT * FROM rating WHERE id = ?";

@@ -3,9 +3,10 @@ package ru.yandex.practicum.filmorate.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.filmorate.exception.NotFoundException;
-import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.dal.storage.user.UserStorage;
+import ru.yandex.practicum.filmorate.exception.NotFoundException;
+import ru.yandex.practicum.filmorate.exception.NotFriendException;
+import ru.yandex.practicum.filmorate.model.User;
 
 import java.util.Collection;
 
@@ -49,6 +50,7 @@ public class UserService {
     public void deleteFriend(long userId, long friendId) {
         checkUserInStorage(userId);
         checkUserInStorage(friendId);
+        checkFriendship(userId, friendId);
         userStorage.deleteFriend(userId, friendId);
     }
 
@@ -65,8 +67,14 @@ public class UserService {
 
     private void checkUserInStorage(long userId) {
         userStorage.getUserById(userId)
-            .orElseThrow(() -> new NotFoundException(
-                String.format("Пользователь с id: %d не найден.", userId)
-        ));
+                .orElseThrow(() -> new NotFoundException(
+                        String.format("Пользователь с id: %d не найден.", userId)
+                ));
+    }
+
+    private void checkFriendship(long userId, long friendId) {
+        if (!userStorage.friendExists(userId, friendId))
+            throw new NotFriendException("Пользователей нет в списке друзей друг у друга");
+
     }
 }

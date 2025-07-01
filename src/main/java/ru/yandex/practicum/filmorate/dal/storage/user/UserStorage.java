@@ -25,4 +25,6 @@ public interface UserStorage {
 
     Collection<User> getCommonFriends(long userId, long otherId);
 
+    boolean friendExists(long userId, long friendId);
+
 }

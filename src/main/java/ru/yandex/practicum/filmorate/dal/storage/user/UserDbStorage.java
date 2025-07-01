@@ -20,15 +20,17 @@ public class UserDbStorage extends DbStorage implements UserStorage {
     private final static String ADD_FRIEND_QUERY = "INSERT INTO friends(user_id, friend_id) VALUES (?, ?)";
     private final static String DELETE_FRIEND_QUERY = "DELETE FROM friends WHERE user_id = ? AND friend_id = ?";
     private final static String FIND_USER_FRIENDS_QUERY = "SELECT u.id, u.email, u.login, u.name, u.birthday FROM friends AS f INNER JOIN users AS u ON f.friend_id = u.id WHERE f.user_id = ?";
-    private final static String FIND_USERS_COMMON_FRIENDS_QUERY = "SELECT u.id, u.email, u.login, u.name, u.birthday " +
-                                                                    " FROM friends f" +
-                                                                    " JOIN users u ON f.friend_id = u.id" +
-                                                                    " WHERE f.user_id = ?" +
-                                                                    " INTERSECT" +
-                                                                    " SELECT u.id, u.name, u.email, u.login, u.birthday" +
-                                                                    " FROM friends f" +
-                                                                    " JOIN users u ON f.friend_id = u.id" +
-                                                                    " WHERE f.user_id = ?";
+    private final static String FIND_FRIENDSHIP_QUERY = "SELECT COUNT(*) FROM friends WHERE user_id = ? AND friend_id = ?";
+    private final static String FIND_USERS_COMMON_FRIENDS_QUERY =
+            "SELECT u.id, u.email, u.login, u.name, u.birthday " +
+            " FROM friends f" +
+            " JOIN users u ON f.friend_id = u.id" +
+            " WHERE f.user_id = ?" +
+            " INTERSECT" +
+            " SELECT u.id, u.email, u.login, u.name, u.birthday" +
+            " FROM friends f" +
+            " JOIN users u ON f.friend_id = u.id" +
+            " WHERE f.user_id = ?";
 
 
     public UserDbStorage(JdbcTemplate jdbc, RowMapper<User> mapper) {
@@ -43,7 +45,7 @@ public class UserDbStorage extends DbStorage implements UserStorage {
                 user.getLogin(),
                 user.getName(),
                 user.getBirthday()
-                );
+        );
         user.setId(id);
         return user;
     }
@@ -106,4 +108,11 @@ public class UserDbStorage extends DbStorage implements UserStorage {
                 otherId
         );
     }
+
+    @Override
+    public boolean friendExists(long userId, long friendId) {
+        Integer count = jdbc.queryForObject(FIND_FRIENDSHIP_QUERY, Integer.class, userId, friendId);
+        return count != null && count > 0;
+    }
+
 }

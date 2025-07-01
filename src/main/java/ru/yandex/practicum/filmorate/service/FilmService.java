@@ -2,14 +2,14 @@ package ru.yandex.practicum.filmorate.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.filmorate.dal.storage.film.FilmStorage;
 import ru.yandex.practicum.filmorate.dal.storage.film.GenreStorage;
 import ru.yandex.practicum.filmorate.dal.storage.film.MpaStorage;
+import ru.yandex.practicum.filmorate.dal.storage.user.UserStorage;
 import ru.yandex.practicum.filmorate.dto.FilmDto;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.mapper.FilmMapper;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.dal.storage.film.FilmStorage;
-import ru.yandex.practicum.filmorate.dal.storage.user.UserStorage;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.model.Mpa;
 
@@ -130,8 +130,9 @@ public class FilmService {
                 .map(Genre::getId)
                 .collect(Collectors.toSet());
         genreIds.removeAll(foundIds);
-        if (!genreIds.isEmpty()) {}
-            throw new NotFoundException("Не найдены жанры с ID: " + genreIds);
+        if (!genreIds.isEmpty()) {
+        }
+        throw new NotFoundException("Не найдены жанры с ID: " + genreIds);
     }
 
     private void checkMpa(int mpaId) {
