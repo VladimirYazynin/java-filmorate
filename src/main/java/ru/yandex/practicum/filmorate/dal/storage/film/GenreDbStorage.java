@@ -15,9 +15,9 @@ import java.util.stream.Collectors;
 @Repository
 public class GenreDbStorage extends DbStorage implements GenreStorage {
 
-    private final static String FIND_ALL_QUERY = "SELECT * FROM genres";
-    private final static String FIND_BY_ID_QUERY = "SELECT * FROM genres WHERE id = ?";
-    private final static String FIND_LIST_QUERY = "SELECT * FROM genres WHERE id IN ";
+    private static final String FIND_ALL_QUERY = "SELECT * FROM genres";
+    private static final String FIND_BY_ID_QUERY = "SELECT * FROM genres WHERE id = ?";
+    private static final String FIND_LIST_QUERY = "SELECT * FROM genres WHERE id IN ";
     private static final String GENRE_FOR_FILM_QUERY =
             "SELECT g.id AS id, g.name AS name FROM films_genres AS fg INNER JOIN genres AS g ON g.id = fg.genre_id WHERE fg.film_id = ?";
 

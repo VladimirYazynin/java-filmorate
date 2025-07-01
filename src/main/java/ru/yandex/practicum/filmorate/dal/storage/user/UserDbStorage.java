@@ -12,16 +12,16 @@ import java.util.Optional;
 @Component
 public class UserDbStorage extends DbStorage implements UserStorage {
 
-    private final static String FIND_ALL_QUERY = "SELECT * FROM users";
-    private final static String FIND_BY_ID_QUERY = "SELECT * FROM users WHERE id = ?";
-    private final static String INSERT_QUERY = "INSERT INTO users(email, login, name, birthday) VALUES (?, ?, ?, ?)";
-    private final static String UPDATE_QUERY = "UPDATE users SET email = ?, login = ?, name = ?, birthday = ? WHERE id = ?";
-    private final static String DELETE_QUERY = "DELETE FROM users WHERE id = ?";
-    private final static String ADD_FRIEND_QUERY = "INSERT INTO friends(user_id, friend_id) VALUES (?, ?)";
-    private final static String DELETE_FRIEND_QUERY = "DELETE FROM friends WHERE user_id = ? AND friend_id = ?";
-    private final static String FIND_USER_FRIENDS_QUERY = "SELECT u.id, u.email, u.login, u.name, u.birthday FROM friends AS f INNER JOIN users AS u ON f.friend_id = u.id WHERE f.user_id = ?";
-    private final static String FIND_FRIENDSHIP_QUERY = "SELECT COUNT(*) FROM friends WHERE user_id = ? AND friend_id = ?";
-    private final static String FIND_USERS_COMMON_FRIENDS_QUERY =
+    private static final String FIND_ALL_QUERY = "SELECT * FROM users";
+    private static final String FIND_BY_ID_QUERY = "SELECT * FROM users WHERE id = ?";
+    private static final String INSERT_QUERY = "INSERT INTO users(email, login, name, birthday) VALUES (?, ?, ?, ?)";
+    private static final String UPDATE_QUERY = "UPDATE users SET email = ?, login = ?, name = ?, birthday = ? WHERE id = ?";
+    private static final String DELETE_QUERY = "DELETE FROM users WHERE id = ?";
+    private static final String ADD_FRIEND_QUERY = "INSERT INTO friends(user_id, friend_id) VALUES (?, ?)";
+    private static final String DELETE_FRIEND_QUERY = "DELETE FROM friends WHERE user_id = ? AND friend_id = ?";
+    private static final String FIND_USER_FRIENDS_QUERY = "SELECT u.id, u.email, u.login, u.name, u.birthday FROM friends AS f INNER JOIN users AS u ON f.friend_id = u.id WHERE f.user_id = ?";
+    private static final String FIND_FRIENDSHIP_QUERY = "SELECT COUNT(*) FROM friends WHERE user_id = ? AND friend_id = ?";
+    private static final String FIND_USERS_COMMON_FRIENDS_QUERY =
             "SELECT u.id, u.email, u.login, u.name, u.birthday " +
             " FROM friends f" +
             " JOIN users u ON f.friend_id = u.id" +

@@ -12,8 +12,8 @@ import java.util.Optional;
 @Repository
 public class MpaDbStorage extends DbStorage implements MpaStorage {
 
-    private final static String FIND_ALL_QUERY = "SELECT * FROM rating";
-    private final static String FIND_BY_ID_QUERY = "SELECT * FROM rating WHERE id = ?";
+    private static final String FIND_ALL_QUERY = "SELECT * FROM rating";
+    private static final String FIND_BY_ID_QUERY = "SELECT * FROM rating WHERE id = ?";
     private static final String FIND_MPA_BY_FILM_ID_QUERY =
             "SELECT r.id, r.name, r.description FROM films AS f INNER JOIN rating AS r ON f.rating_id=r.id WHERE f.id = ?";
 
