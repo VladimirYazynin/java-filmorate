@@ -5,10 +5,13 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.dal.storage.DbStorage;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.Genre;
 
 import java.sql.Date;
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Repository
 public class FilmDbStorage extends DbStorage implements FilmStorage {
@@ -25,6 +28,8 @@ public class FilmDbStorage extends DbStorage implements FilmStorage {
             "DELETE FROM films WHERE id = ?";
     private static final String POPULAR_FILM_QUERY =
             "SELECT f.id, f.name, f.description, f.releaseDate, f.duration, COUNT(l.id) AS rate FROM films AS f LEFT JOIN likes AS l ON l.film_id = f.id GROUP BY f.id, f.name, f.description, f.releaseDate, f.duration ORDER BY COUNT(l.id) DESC LIMIT ?";
+    private static final String GENRE_FOR_FILM_QUERY =
+            "SELECT g.id, g.name FROM films_genres AS fg INNER JOIN genres AS g ON fg.genre_id=g.id WHERE fg.film_id = ?";
 
     public FilmDbStorage(JdbcTemplate jdbc, RowMapper<Film> mapper) {
         super(jdbc, mapper, Film.class);
@@ -68,6 +73,27 @@ public class FilmDbStorage extends DbStorage implements FilmStorage {
     @Override
     public Collection<Film> getAllFilms() {
         return findMany(FIND_ALL_QUERY);
+    }
+
+
+    public List<Genre> getGenreForFilm(int id) {
+        return findMany(GENRE_FOR_FILM_QUERY, id);
+    }
+
+    @Override
+    public void insertGenreForFilm(long idFilm, Set<Genre> list) {
+        List<Integer> listInt = list.stream()
+                .map(Genre::getId)
+                .toList();
+        StringBuilder valuesBuilder = new StringBuilder();
+        for (int idGenre : listInt) {
+            if (!valuesBuilder.isEmpty()) {
+                valuesBuilder.append(", ");
+            }
+            valuesBuilder.append("(").append(idFilm).append(", ").append(idGenre).append(")");
+        }
+        String queryInsertGenre = "INSERT INTO filmGenre (film_id, genre_id) VALUES " + valuesBuilder;
+        insertMany(queryInsertGenre);
     }
 
     @Override

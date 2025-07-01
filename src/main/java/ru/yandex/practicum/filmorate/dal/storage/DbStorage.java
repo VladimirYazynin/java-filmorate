@@ -62,4 +62,14 @@ public class DbStorage<T> {
             throw new InternalServerException("Не удалось сохранить данные");
         }
     }
+
+    protected int insertMany(String query) {
+        int count = jdbc.update(query);
+        if (count > 0) {
+            return count;
+        } else {
+            throw new InternalServerException("Не удалось сохранить данные");
+        }
+    }
+
 }

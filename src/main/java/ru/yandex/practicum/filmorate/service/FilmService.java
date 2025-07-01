@@ -1,12 +1,9 @@
 package ru.yandex.practicum.filmorate.service;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.filmorate.dal.storage.film.GenreDbStorage;
 import ru.yandex.practicum.filmorate.dal.storage.film.GenreStorage;
 import ru.yandex.practicum.filmorate.dal.storage.film.MpaStorage;
-import ru.yandex.practicum.filmorate.exception.BadRequestException;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.dal.storage.film.FilmStorage;
@@ -30,7 +27,10 @@ public class FilmService {
     public Film addFilm(Film film) {
         setGenre(film);
         setMpa(film);
-        return filmStorage.addFilm(film);
+        filmStorage.addFilm(film);
+        if (film.getGenres() != null)
+            filmStorage.insertGenreForFilm(film.getId(), film.getGenres());
+        return film;
     }
 
     public void updateFilm(Film modifiedFilm) {
@@ -77,25 +77,26 @@ public class FilmService {
     }
 
     private Film setGenre(Film film) {
-        Set<Integer> genreIds = film.getGenres().stream()
-                .map(Genre::getId)
-                .collect(Collectors.toSet()
-                );
-        List<Genre> foundGenres = genreStorage.getByListId(genreIds);
-        Set<Integer> foundIds = foundGenres.stream()
-                .map(Genre::getId)
-                .collect(Collectors.toSet());
-        genreIds.removeAll(foundIds);
-        if (!genreIds.isEmpty())
-            throw new NotFoundException("Не найдены жанры с ID: " + genreIds);
-        film.getGenres().clear();
-        System.out.println(foundGenres);
-        film.getGenres().addAll(foundGenres);
-
+        if (film.getGenres() != null) {
+            Set<Integer> genreIds = film.getGenres().stream()
+                    .map(Genre::getId)
+                    .collect(Collectors.toSet()
+                    );
+            List<Genre> foundGenres = genreStorage.getByListId(genreIds);
+            Set<Integer> foundIds = foundGenres.stream()
+                    .map(Genre::getId)
+                    .collect(Collectors.toSet());
+            genreIds.removeAll(foundIds);
+            if (!genreIds.isEmpty())
+                throw new NotFoundException("Не найдены жанры с ID: " + genreIds);
+            film.getGenres().clear();
+            film.getGenres().addAll(foundGenres);
+        }
         return film;
     }
 
     private Film setMpa(Film film) {
+        checkMpa(film.getMpa().getId());
         if (film.getMpa() != null) {
             int mpaId = film.getMpa().getId();
             checkMpa(mpaId);
