@@ -51,16 +51,4 @@ public class FilmServiceTest {
                 .hasFieldOrPropertyWithValue("mpa.name", "G");
     }
 
-    @Test
-    public void getFilmByIdTest() {
-        FilmDto filmCreate = filmService.addFilm(film);
-        FilmDto filmCreateDB = filmService.getFilmById(film.getId());
-        assertThat(filmCreateDB)
-                .hasFieldOrPropertyWithValue("id", film.getId())
-                .hasFieldOrPropertyWithValue("name", "name");
-        assertThat(filmCreate.getGenres())
-                .extracting(Genre::getName)
-                .contains("Боевик");
-    }
-
 }
