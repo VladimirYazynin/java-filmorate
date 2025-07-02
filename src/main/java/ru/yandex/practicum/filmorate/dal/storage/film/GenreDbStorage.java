@@ -40,7 +40,6 @@ public class GenreDbStorage extends DbStorage implements GenreStorage {
         String idsByString = genreIds.stream()
                 .map(String::valueOf)
                 .collect(Collectors.joining(", ", "(", ")"));
-        System.out.println(idsByString);
         return findMany(FIND_LIST_QUERY + idsByString);
     }
 

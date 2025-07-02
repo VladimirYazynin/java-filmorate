@@ -8,13 +8,13 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.context.annotation.ComponentScan;
 import ru.yandex.practicum.filmorate.dto.FilmDto;
-import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.model.Mpa;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -26,7 +26,7 @@ public class FilmServiceTest {
 
     private final FilmService filmService;
 
-    Film film;
+    FilmDto film;
 
     @BeforeEach
     public void addTestFilm() {
@@ -34,9 +34,9 @@ public class FilmServiceTest {
         mpa.setId(1);
         Genre genre = new Genre();
         genre.setId(6);
-        Set<Genre> genres = new HashSet<>();
+        List<Genre> genres = new ArrayList<>();
         genres.add(genre);
-        film = new Film();
+        film = new FilmDto();
         film.setName("name");
         film.setDescription("v".repeat(15));
         film.setDuration(90);

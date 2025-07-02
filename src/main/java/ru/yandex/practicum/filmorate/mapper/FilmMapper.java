@@ -34,4 +34,22 @@ public class FilmMapper {
         return filmDto;
     }
 
+    public static Film mapToFilm(FilmDto filmDto) {
+        Film film = new Film();
+        film.setId(filmDto.getId());
+        film.setName(filmDto.getName());
+        film.setDescription(filmDto.getDescription());
+        film.setReleaseDate(filmDto.getReleaseDate());
+        film.setDuration(filmDto.getDuration());
+        film.setMpa(filmDto.getMpa());
+
+        if (filmDto.getGenres() != null) {
+            film.setGenres(new HashSet<>(filmDto.getGenres()));
+        } else {
+            film.setGenres(new HashSet<>());
+        }
+
+        return film;
+    }
+
 }

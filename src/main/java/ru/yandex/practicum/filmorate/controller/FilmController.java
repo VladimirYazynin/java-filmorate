@@ -30,11 +30,11 @@ public class FilmController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public FilmDto addFilm(@RequestBody @Valid Film film) {
-        log.info("На вход поступили данные для добавления фильма: {}", film);
-        FilmDto filmDto = filmService.addFilm(film);
-        log.info("Добавлен фильм: {}", film);
-        return filmDto;
+    public FilmDto addFilm(@RequestBody @Valid FilmDto filmDto) {
+        log.info("На вход поступили данные для добавления фильма: {}", filmDto);
+        FilmDto resultFilmDto = filmService.addFilm(filmDto);
+        log.info("Добавлен фильм: {}", filmDto);
+        return resultFilmDto;
     }
 
     @PutMapping

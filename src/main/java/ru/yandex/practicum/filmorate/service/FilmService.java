@@ -28,7 +28,8 @@ public class FilmService {
     private final GenreStorage genreStorage;
     private final MpaStorage mpaStorage;
 
-    public FilmDto addFilm(Film film) {
+    public FilmDto addFilm(FilmDto filmDto) {
+        Film film = FilmMapper.mapToFilm(filmDto);
         setGenre(film);
         setMpa(film);
         filmStorage.addFilm(film);
@@ -54,8 +55,6 @@ public class FilmService {
                         String.format("Фильм с id: %d не найден.", filmId)
                 ));
         searchAndSetGenre(film);
-        searchAndSetMpa(film);
-        System.out.println("desc2 " + film.getDescription());
         return FilmMapper.mapToFilmDto(film);
     }
 
@@ -138,9 +137,7 @@ public class FilmService {
 
     public void searchAndSetGenre(Film film) {
         Set<Genre> genres = new HashSet<>();
-        System.out.println("description: " + film.getDescription());
-        List<Genre> foundGenres = genreStorage.getGenreForFilm(film.getId());
-        genres.addAll(foundGenres);
+        genres.addAll(genreStorage.getGenreForFilm(film.getId()));
         film.setGenres(genres);
     }
 

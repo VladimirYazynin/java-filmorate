@@ -19,9 +19,9 @@ CREATE TABLE IF NOT EXISTS films (
 );
 
 CREATE TABLE IF NOT EXISTS films_genres (
-     id       BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
      film_id  BIGINT REFERENCES films (id),
-     genre_id INTEGER REFERENCES genres (id)
+     genre_id INTEGER REFERENCES genres (id),
+     PRIMARY KEY (film_id, genre_id)
 );
 
 CREATE TABLE IF NOT EXISTS users (
@@ -33,14 +33,13 @@ CREATE TABLE IF NOT EXISTS users (
 );
 
 CREATE TABLE IF NOT EXISTS likes (
-     id      BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
      film_id BIGINT REFERENCES films (id),
-     user_id BIGINT REFERENCES users (id)
+     user_id BIGINT REFERENCES users (id),
+     PRIMARY KEY (film_id, user_id)
 );
 
 CREATE TABLE IF NOT EXISTS friends (
-    id        BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     user_id   BIGINT REFERENCES users (id),
     friend_id BIGINT REFERENCES users (id),
-    status    bool
+    PRIMARY KEY (user_id, friend_id)
 );

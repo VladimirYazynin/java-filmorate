@@ -79,7 +79,7 @@ public class UserDbStorage extends DbStorage implements UserStorage {
 
     @Override
     public void addFriend(long userId, long friendId) {
-        insert(
+        jdbc.update(
                 ADD_FRIEND_QUERY,
                 userId,
                 friendId
