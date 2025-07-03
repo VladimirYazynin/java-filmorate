@@ -1,2 +1,2 @@
 # java-filmorate
-Template repository for Filmorate project.
+![Схема базы данных проекта](/src/main/resources/java-filmorate-db-scheme.jpg)
